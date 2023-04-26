@@ -39,6 +39,12 @@ resource "google_compute_instance" "jenkins" {
   }
 }
 
+resource "google_compute_attached_disk" "jenkins" {
+  count = length(local.vms)
+  disk     = data.google_compute_disk.jenkins.id
+  instance = google_compute_instance.jenkins[count.index].id
+}
+
 output "jenkins_fqdn" {
   value = trimsuffix("jenkins.${data.google_dns_managed_zone.main.dns_name}", ".")
 }
